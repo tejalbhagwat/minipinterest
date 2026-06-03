@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@minipinterest — Wallpapers</title>
+
+<!-- Link preview tags -->
+<meta property="og:title" content="@minipinterest — Wallpapers">
+<meta property="og:description" content="This is my way of saying — I was here, and it was beautiful. ✦ Original quality photos, free to download.">
+<meta property="og:image" content="https://tejalbhagwat.github.io/minipinterest/preview.jpg">
+<meta property="og:url" content="https://tejalbhagwat.github.io/minipinterest/gallery.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="@minipinterest — Wallpapers">
+<meta name="twitter:description" content="This is my way of saying — I was here, and it was beautiful. ✦">
+<meta name="twitter:image" content="https://tejalbhagwat.github.io/minipinterest/preview.jpg">
+<meta name="description" content="This is my way of saying — I was here, and it was beautiful. ✦ Original quality wallpapers, free to download.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #d6ecea;
+    --surface: #e8f5f4;
+    --border: rgba(60,130,125,0.15);
+    --border-hover: rgba(60,130,125,0.3);
+    --text-primary: #1a3533;
+    --text-secondary: #3d7570;
+    --text-muted: #7ab0ab;
+    --accent: #2e8c85;
+    --accent-dim: rgba(46,140,133,0.1);
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+  body { background: var(--bg); color: var(--text-primary); font-family: var(--font-body); font-weight: 300; min-height: 100vh; overflow-x: hidden; }
+
+  /* Header */
+  header { padding: 4rem 2rem 2.5rem; text-align: center; border-bottom: 0.5px solid var(--border); position: relative; }
+  header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 50% -20%, rgba(46,140,133,0.06), transparent); pointer-events: none; }
+  .handle { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+  h1 { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; line-height: 1.1; margin-bottom: 0.75rem; }
+  .tagline { font-size: 14px; color: var(--text-secondary); max-width: 320px; margin: 0 auto; line-height: 1.6; }
+
+  /* Nav breadcrumb */
+  #breadcrumb { display: none; align-items: center; gap: 8px; padding: 1.25rem 2rem 0; max-width: 1200px; margin: 0 auto; }
+  #breadcrumb.visible { display: flex; }
+  .crumb-home { font-size: 13px; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+  .crumb-sep { color: var(--text-muted); font-size: 13px; }
+  .crumb-current { font-size: 13px; color: var(--text-secondary); }
+
+  /* Main wrap */
+  .main-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* Top bar */
+  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 12px; }
+  .count { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .btn-admin { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); background: none; border: 0.5px solid var(--border); border-radius: 4px; padding: 6px 12px; cursor: pointer; transition: color 0.2s, border-color 0.2s; }
+  .btn-admin:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* Admin panel */
+  #admin-panel { display: none; background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+  #admin-panel.visible { display: block; }
+  .admin-panel-title { font-family: var(--font-display); font-size: 17px; font-weight: 400; margin-bottom: 1.25rem; }
+  .admin-tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; }
+  .atab { padding: 6px 16px; border-radius: 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border: 0.5px solid var(--border); background: none; color: var(--text-muted); transition: all 0.2s; }
+  .atab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .field input[type="text"], .field textarea, .field select {
+    width: 100%; background: var(--bg); border: 0.5px solid var(--border); border-radius: 6px;
+    padding: 10px 12px; color: var(--text-primary); font-family: var(--font-body);
+    font-size: 14px; font-weight: 300; outline: none; transition: border-color 0.2s; resize: vertical;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); }
+  .field textarea { min-height: 70px; }
+  .upload-zone { border: 0.5px dashed var(--border-hover); border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+  .upload-zone:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .upload-zone input { display: none; }
+  .upload-zone p { font-size: 13px; color: var(--text-secondary); margin-top: 6px; }
+  #folder-preview-img, #photo-preview-img { width: 100%; max-height: 160px; object-fit: cover; border-radius: 6px; margin-bottom: 10px; display: none; }
+  .btn-submit { width: 100%; margin-top: 0.75rem; padding: 11px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-family: var(--font-body); font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+  .btn-submit:hover { opacity: 0.85; }
+
+  /* Folders grid */
+  #folders-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .folder-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.25s, transform 0.2s; animation: fadeUp 0.4s ease both; }
+  .folder-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+  .folder-cover { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; background: var(--bg); }
+  .folder-cover-empty { width: 100%; aspect-ratio: 4/3; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+  .folder-cover-empty svg { width: 36px; height: 36px; color: var(--text-muted); opacity: 0.5; }
+  .folder-info { padding: 0.875rem 1rem; }
+  .folder-name { font-family: var(--font-display); font-size: 15px; font-weight: 400; margin-bottom: 3px; }
+  .folder-meta { font-size: 12px; color: var(--text-muted); }
+  .folder-actions { display: flex; gap: 8px; margin-top: 8px; }
+  .folder-del { background: none; border: none; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); cursor: pointer; padding: 0; transition: color 0.2s; }
+  .folder-del:hover { color: var(--accent); }
+
+  /* Photos grid (inside folder) */
+  #photos-view { display: none; }
+  #photos-view.visible { display: block; }
+  #folders-view { display: block; }
+  #folders-view.hidden { display: none; }
+  #photos-grid { columns: 3 200px; column-gap: 14px; }
+  .photo-card { break-inside: avoid; margin-bottom: 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.25s; animation: fadeUp 0.4s ease both; }
+  .photo-card:hover { border-color: var(--border-hover); }
+  .photo-card img { width: 100%; display: block; cursor: zoom-in; }
+  .card-body { padding: 0.875rem 1rem 1rem; }
+  .card-title { font-family: var(--font-display); font-size: 14px; font-weight: 400; margin-bottom: 5px; }
+  .card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; white-space: pre-wrap; }
+  .card-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .card-size { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); }
+  .btn-download { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: transparent; border: 0.5px solid var(--border-hover); border-radius: 5px; color: var(--text-primary); font-family: var(--font-body); font-size: 11px; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+  .btn-download:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .btn-download svg { width: 12px; height: 12px; }
+  .delete-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 0; transition: color 0.2s; }
+  .delete-btn:hover { color: var(--accent); }
+
+  /* Empty */
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+  .empty-state p { font-size: 14px; margin-top: 8px; }
+
+  /* Lightbox */
+  #lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1000; align-items: center; justify-content: center; padding: 2rem; cursor: zoom-out; }
+  #lightbox.open { display: flex; }
+  #lightbox img { max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: 4px; }
+  #lightbox-close { position: absolute; top: 1.25rem; right: 1.5rem; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 28px; cursor: pointer; }
+
+  /* Password overlay */
+  #pw-overlay { display: none; position: fixed; inset: 0; background: rgba(214,236,234,0.93); z-index: 2000; align-items: center; justify-content: center; }
+  #pw-overlay.open { display: flex; }
+  .pw-box { background: var(--surface); border: 0.5px solid var(--border-hover); border-radius: 14px; padding: 2rem; width: 300px; text-align: center; }
+  .pw-box p.title { font-family: var(--font-display); font-size: 17px; margin-bottom: 6px; }
+  .pw-box p.sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 1.25rem; }
+  #pw-input { width: 100%; background: var(--bg); border: 0.5px solid var(--border); border-radius: 6px; padding: 10px 12px; color: var(--text-primary); font-size: 14px; outline: none; margin-bottom: 8px; font-family: var(--font-body); }
+  #pw-error { display: none; font-size: 12px; color: var(--accent); margin-bottom: 8px; }
+  .pw-unlock { width: 100%; padding: 11px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; font-family: var(--font-body); font-weight: 500; }
+  .pw-cancel { margin-top: 10px; background: none; border: none; font-size: 12px; color: var(--text-muted); cursor: pointer; font-family: var(--font-body); }
+
+  /* Footer */
+  footer { text-align: center; padding: 2rem; border-top: 0.5px solid var(--border); font-size: 12px; color: var(--text-muted); letter-spacing: 0.06em; }
+  .footer-handle { color: var(--accent); }
+
+  /* Emoji picker */
+  .emoji-trigger { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; font-size:18px; cursor:pointer; line-height:1; padding:2px; }
+  .ecat { font-size:11px; padding:4px 10px; border-radius:20px; border:0.5px solid var(--border); background:none; color:var(--text-secondary); cursor:pointer; transition:all 0.15s; }
+  .ecat.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .emoji-btn { font-size:20px; background:none; border:none; cursor:pointer; padding:3px 5px; border-radius:6px; transition:background 0.15s; line-height:1; }
+  .emoji-btn:hover { background:rgba(46,140,133,0.15); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 600px) {
+    /* Header */
+    header { padding: 2.5rem 1.25rem 1.75rem; }
+    h1 { font-size: 2rem; }
+    .tagline { font-size: 13px; }
+
+    /* Layout */
+    .main-wrap { padding: 1.25rem 1rem 3rem; }
+    #breadcrumb { padding: 1rem 1rem 0; }
+
+    /* Folders — 2 columns on mobile */
+    #folders-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .folder-name { font-size: 13px; }
+    .folder-meta { font-size: 11px; }
+
+    /* Photos — 1 column on mobile */
+    #photos-grid { columns: 1; }
+
+    /* Admin panel */
+    #admin-panel { padding: 1.25rem; }
+    .admin-tabs { flex-wrap: wrap; }
+    .atab { font-size: 11px; padding: 5px 12px; }
+
+    /* Buttons — bigger tap targets */
+    .btn-submit { padding: 14px; font-size: 14px; }
+    .btn-admin { padding: 8px 14px; font-size: 12px; }
+    .btn-download { padding: 8px 14px; font-size: 12px; }
+
+    /* Upload buttons */
+    .upload-zone { padding: 1.25rem; }
+
+    /* Password box */
+    .pw-box { width: 90vw; padding: 1.5rem; }
+    #pw-input { font-size: 16px; padding: 12px; } /* 16px prevents iOS zoom */
+
+    /* Inputs — 16px prevents iOS auto-zoom */
+    .field input[type="text"],
+    .field textarea,
+    .field select { font-size: 16px; padding: 12px; }
+
+    /* Emoji picker */
+    .emoji-btn { font-size: 24px; padding: 4px 6px; }
+    .ecat { font-size: 12px; padding: 6px 12px; }
+
+    /* Top bar */
+    .top-bar { margin-bottom: 1.25rem; }
+    .count { font-size: 12px; }
+
+    /* Cards */
+    .card-title { font-size: 14px; }
+    .card-desc { font-size: 13px; }
+
+    /* Footer */
+    footer { font-size: 11px; padding: 1.5rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="handle">@minipinterest</div>
+  <h1>Wallpapers</h1>
+  <p class="tagline">This is my way of saying — I was here, and it was beautiful. ✦</p>
+</header>
+
+<div id="breadcrumb">
+  <span class="crumb-home" onclick="goHome()">All places</span>
+  <span class="crumb-sep">›</span>
+  <span class="crumb-current" id="crumb-name"></span>
+</div>
+
+<div class="main-wrap">
+
+  <div class="top-bar">
+    <span class="count" id="count-label"></span>
+    <button class="btn-admin" onclick="toggleAdmin()" id="admin-btn">+ Manage</button>
+  </div>
+
+  <!-- Admin panel -->
+  <div id="admin-panel">
+    <div class="admin-panel-title" id="admin-title">Manage gallery</div>
+    <div class="admin-tabs">
+      <button class="atab active" onclick="switchTab('folder-tab', this)">New place</button>
+      <button class="atab" onclick="switchTab('photo-tab', this)">Add wallpaper</button>
+    </div>
+
+    <!-- New folder tab -->
+    <div class="tab-pane active" id="folder-tab">
+      <div class="field">
+        <label>Cover photo</label>
+        <div class="upload-zone" id="folder-upload-zone">
+          <img id="folder-preview-img" alt="cover preview">
+          <div id="folder-upload-prompt">
+            <p>📁 Tap here to choose a cover photo</p>
+          </div>
+        </div>
+        <input type="file" id="folder-cover-input" accept="image/*" style="display:none;">
+        <button type="button" onclick="document.getElementById('folder-cover-input').click()" style="margin-top:8px; width:100%; padding:9px; background:var(--accent-dim); border:0.5px solid var(--border-hover); border-radius:6px; color:var(--accent); font-family:var(--font-body); font-size:13px; cursor:pointer;">📷 Choose cover photo</button>
+      </div>
+      <div class="field">
+        <label>Place name</label>
+        <div style="position:relative;">
+          <input type="text" id="folder-name-input" placeholder="e.g. 🌊 Goa, 🏔️ Ladakh…" style="padding-right:40px;">
+          <button type="button" class="emoji-trigger" onclick="openPicker('folder-name-input')">😊</button>
+        </div>
+      </div>
+      <button class="btn-submit" onclick="createFolder()">Create place folder</button>
+    </div>
+
+    <!-- Add photo tab -->
+    <div class="tab-pane" id="photo-tab">
+      <div class="field">
+        <label>Place folder</label>
+        <select id="photo-folder-select">
+          <option value="">— select a place —</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Photo</label>
+        <div class="upload-zone" id="photo-upload-zone">
+          <img id="photo-preview-img" alt="photo preview">
+          <div id="photo-upload-prompt">
+            <p>📁 Tap here to choose a photo</p>
+            <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">Original file — no compression</p>
+          </div>
+        </div>
+        <input type="file" id="photo-file-input" accept="image/*" style="display:none;">
+        <button type="button" onclick="document.getElementById('photo-file-input').click()" style="margin-top:8px; width:100%; padding:9px; background:var(--accent-dim); border:0.5px solid var(--border-hover); border-radius:6px; color:var(--accent); font-family:var(--font-body); font-size:13px; cursor:pointer;">📷 Choose wallpaper photo</button>
+      </div>
+      <div class="field">
+        <label>Title</label>
+        <div style="position:relative;">
+          <input type="text" id="photo-title-input" placeholder="e.g. 🌅 Golden hour at Marine Drive" style="padding-right:40px;">
+          <button type="button" class="emoji-trigger" onclick="openPicker('photo-title-input')">😊</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Your note</label>
+        <div style="position:relative;">
+          <textarea id="photo-desc-input" placeholder="The story behind this shot… 📸"></textarea>
+          <button type="button" class="emoji-trigger" style="top:8px;" onclick="openPicker('photo-desc-input')">😊</button>
+        </div>
+      </div>
+      <button class="btn-submit" onclick="addPhoto()">Add wallpaper</button>
+    </div>
+  </div>
+
+  <!-- Emoji picker -->
+  <div id="emoji-picker" style="display:none; background:var(--surface); border:0.5px solid var(--border-hover); border-radius:12px; padding:12px; margin-bottom:1rem; max-width:100%;">
+    <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+      <button class="ecat active" onclick="showCat('nature',this)">🌿 Nature</button>
+      <button class="ecat" onclick="showCat('travel',this)">✈️ Travel</button>
+      <button class="ecat" onclick="showCat('sky',this)">🌅 Sky</button>
+      <button class="ecat" onclick="showCat('feel',this)">✨ Vibes</button>
+      <button class="ecat" onclick="showCat('camera',this)">📸 Camera</button>
+    </div>
+    <div id="emoji-grid" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
+    <div style="margin-top:10px; text-align:right;">
+      <button onclick="document.getElementById('emoji-picker').style.display='none'" style="font-size:11px; background:none; border:none; color:var(--text-muted); cursor:pointer; letter-spacing:0.08em; text-transform:uppercase;">Close</button>
+    </div>
+  </div>
+
+  <!-- Folders view -->
+  <div id="folders-view">
+    <div id="folders-grid"></div>
+    <div class="empty-state" id="folders-empty" style="display:none">
+      <p style="font-size:28px; opacity:0.25">◻</p>
+      <p>No places yet. Click "+ Manage" to create your first folder.</p>
+    </div>
+  </div>
+
+  <!-- Photos view (inside a folder) -->
+  <div id="photos-view">
+    <div id="photos-grid"></div>
+    <div class="empty-state" id="photos-empty" style="display:none">
+      <p style="font-size:28px; opacity:0.25">◻</p>
+      <p>No wallpapers yet in this place. Add some!</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">×</button>
+  <img id="lightbox-img" src="" alt="full size">
+</div>
+
+<!-- Password overlay -->
+<div id="pw-overlay">
+  <div class="pw-box">
+    <p style="font-size:22px; margin-bottom:6px">🔒</p>
+    <p class="title">Admin access</p>
+    <p class="sub">Enter your password to manage photos</p>
+    <input id="pw-input" type="password" placeholder="Password">
+    <p id="pw-error">Incorrect password, try again.</p>
+    <button class="pw-unlock" onclick="submitPassword()">Unlock</button>
+    <br><button class="pw-cancel" onclick="closePw()">Cancel</button>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-handle">@minipinterest</span> &nbsp;·&nbsp; All photos shot on my camera &nbsp;·&nbsp; Free to use as wallpaper
+</footer>
+
+<script>
+  const ADMIN_PASSWORD = 'minipinterest2024';
+  const CLOUD_NAME = 'dvyyihp6g';
+  const UPLOAD_PRESET = 'minipinterest';
+  const UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+  let data = JSON.parse(localStorage.getItem('mp_data') || '{"folders":[],"photos":[]}');
+  let isAuth = sessionStorage.getItem('mp_auth') === '1';
+  let currentFolderIndex = null;
+  let adminVisible = false;
+  let currentFolderFile = null;
+  let currentPhotoFile = null;
+
+  function save() { localStorage.setItem('mp_data', JSON.stringify(data)); }
+
+  /* ── Upload to Cloudinary ── */
+  async function uploadToCloudinary(file, folder) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', UPLOAD_PRESET);
+    formData.append('folder', folder);
+    const res = await fetch(UPLOAD_URL, { method: 'POST', body: formData });
+    if (!res.ok) throw new Error('Upload failed');
+    return await res.json();
+  }
+
+  function showLoading(msg) {
+    let el = document.getElementById('loading-toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'loading-toast';
+      el.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a3533;color:#fff;padding:12px 24px;border-radius:8px;font-size:13px;z-index:9999;letter-spacing:0.06em;';
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+  function hideLoading() {
+    const el = document.getElementById('loading-toast');
+    if (el) el.style.display = 'none';
+  }
+
+  /* ── Password ── */
+  function toggleAdmin() {
+    if (!isAuth) { document.getElementById('pw-overlay').classList.add('open'); setTimeout(() => document.getElementById('pw-input').focus(), 50); return; }
+    openAdmin();
+  }
+  function submitPassword() {
+    if (document.getElementById('pw-input').value === ADMIN_PASSWORD) {
+      isAuth = true; sessionStorage.setItem('mp_auth', '1');
+      document.getElementById('pw-overlay').classList.remove('open');
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-error').style.display = 'none';
+      openAdmin();
+    } else {
+      document.getElementById('pw-error').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+  function closePw() { document.getElementById('pw-overlay').classList.remove('open'); document.getElementById('pw-error').style.display = 'none'; }
+
+  function openAdmin() {
+    adminVisible = !adminVisible;
+    const panel = document.getElementById('admin-panel');
+    const btn = document.getElementById('admin-btn');
+    panel.classList.toggle('visible', adminVisible);
+    btn.textContent = adminVisible ? '× Close' : '+ Manage';
+    refreshFolderSelect();
+    updateAdminTitle();
+  }
+
+  /* ── Tabs ── */
+  function switchTab(id, el) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.atab').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+
+  /* ── Folder cover file input ── */
+  document.getElementById('folder-cover-input').addEventListener('change', function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    currentFolderFile = file;
+    currentPhotoFile = null;
+    const r = new FileReader();
+    r.onload = ev => {
+      const img = document.getElementById('folder-preview-img');
+      img.src = ev.target.result; img.style.display = 'block';
+      document.getElementById('folder-upload-prompt').style.display = 'none';
+    };
+    r.readAsDataURL(file);
+  });
+
+  /* ── Photo file input ── */
+  document.getElementById('photo-file-input').addEventListener('change', function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    currentPhotoFile = file;
+    const r = new FileReader();
+    r.onload = ev => {
+      const img = document.getElementById('photo-preview-img');
+      img.src = ev.target.result; img.style.display = 'block';
+      document.getElementById('photo-upload-prompt').style.display = 'none';
+    };
+    r.readAsDataURL(file);
+  });
+
+  /* ── Create folder ── */
+  async function createFolder() {
+    const name = document.getElementById('folder-name-input').value.trim();
+    if (!name) { alert('Please enter a place name.'); return; }
+    try {
+      let coverUrl = '';
+      if (currentFolderFile) {
+        showLoading('⏳ Uploading cover photo…');
+        const result = await uploadToCloudinary(currentFolderFile, 'covers');
+        coverUrl = result.secure_url;
+      }
+      data.folders.push({ id: Date.now(), name, cover: coverUrl });
+      save(); renderFolders();
+      document.getElementById('folder-name-input').value = '';
+      currentFolderFile = null;
+      document.getElementById('folder-preview-img').style.display = 'none';
+      document.getElementById('folder-preview-img').src = '';
+      document.getElementById('folder-upload-prompt').style.display = 'block';
+      document.getElementById('folder-cover-input').value = '';
+      refreshFolderSelect();
+      hideLoading();
+      alert('✅ Place "' + name + '" created!');
+    } catch(e) {
+      hideLoading();
+      alert('❌ Upload failed. Check your internet and try again.');
+      console.error(e);
+    }
+  }
+
+  /* ── Add photo ── */
+  async function addPhoto() {
+    const folderVal = document.getElementById('photo-folder-select').value;
+    if (!folderVal) { alert('Please select a place folder.'); return; }
+    if (!currentPhotoFile) { alert('Please choose a photo.'); return; }
+    const title = document.getElementById('photo-title-input').value.trim();
+    const desc = document.getElementById('photo-desc-input').value.trim();
+    try {
+      showLoading('⏳ Uploading wallpaper… please wait');
+      const folderName = data.folders.find(f => f.id === Number(folderVal))?.name || 'general';
+      const result = await uploadToCloudinary(currentPhotoFile, 'wallpapers/' + folderName);
+      data.photos.push({
+        id: Date.now(),
+        folderId: Number(folderVal),
+        src: result.secure_url,
+        title: title || 'Untitled',
+        desc,
+        filename: currentPhotoFile.name,
+        sizeKB: currentPhotoFile.size / 1024
+      });
+      save();
+      if (currentFolderIndex !== null && data.folders[currentFolderIndex].id === Number(folderVal)) renderPhotos();
+      renderFolders();
+      currentPhotoFile = null;
+      document.getElementById('photo-file-input').value = '';
+      document.getElementById('photo-title-input').value = '';
+      document.getElementById('photo-desc-input').value = '';
+      document.getElementById('photo-preview-img').style.display = 'none';
+      document.getElementById('photo-preview-img').src = '';
+      document.getElementById('photo-upload-prompt').style.display = 'block';
+      hideLoading();
+      alert('✅ Wallpaper added!');
+    } catch(e) {
+      hideLoading();
+      alert('❌ Upload failed. Check your internet and try again.');
+      console.error(e);
+    }
+  }
+
+  /* ── Render folders ── */
+  function renderFolders() {
+    const grid = document.getElementById('folders-grid');
+    const empty = document.getElementById('folders-empty');
+    grid.innerHTML = '';
+    document.getElementById('count-label').textContent = data.folders.length + ' place' + (data.folders.length !== 1 ? 's' : '');
+    empty.style.display = data.folders.length === 0 ? 'block' : 'none';
+    data.folders.forEach((f, i) => {
+      const count = data.photos.filter(p => p.folderId === f.id).length;
+      const card = document.createElement('div');
+      card.className = 'folder-card';
+      card.style.animationDelay = (i * 0.05) + 's';
+      card.innerHTML = f.cover
+        ? `<div style="position:relative;"><img class="folder-cover" src="${f.cover}" alt="${f.name}" onclick="openFolder(${i})" style="cursor:pointer;">${isAuth ? `<button onclick="event.stopPropagation(); deleteFolder(${i})" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.55);border:none;border-radius:6px;color:#fff;font-size:11px;padding:4px 8px;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">✕ Delete</button>` : ''}</div>`
+        : `<div style="position:relative;"><div class="folder-cover-empty" onclick="openFolder(${i})" style="cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div>${isAuth ? `<button onclick="event.stopPropagation(); deleteFolder(${i})" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.55);border:none;border-radius:6px;color:#fff;font-size:11px;padding:4px 8px;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;">✕ Delete</button>` : ''}</div>`;
+      card.innerHTML += `
+        <div class="folder-info">
+          <div class="folder-name">${f.name}</div>
+          <div class="folder-meta">${count} wallpaper${count !== 1 ? 's' : ''}</div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  /* ── Open folder ── */
+  function openFolder(i) {
+    currentFolderIndex = i;
+    document.getElementById('folders-view').classList.add('hidden');
+    document.getElementById('photos-view').classList.add('visible');
+    document.getElementById('breadcrumb').classList.add('visible');
+    document.getElementById('crumb-name').textContent = data.folders[i].name;
+    updateAdminTitle();
+    renderPhotos();
+    // pre-select folder in photo tab
+    document.getElementById('photo-folder-select').value = data.folders[i].id;
+    switchTab('photo-tab', document.querySelectorAll('.atab')[1]);
+    document.querySelectorAll('.atab')[0].classList.remove('active');
+  }
+
+  /* ── Go home ── */
+  function goHome() {
+    currentFolderIndex = null;
+    document.getElementById('folders-view').classList.remove('hidden');
+    document.getElementById('photos-view').classList.remove('visible');
+    document.getElementById('breadcrumb').classList.remove('visible');
+    updateAdminTitle();
+    renderFolders();
+  }
+
+  /* ── Render photos ── */
+  function renderPhotos() {
+    const folder = data.folders[currentFolderIndex];
+    const photos = data.photos.filter(p => p.folderId === folder.id);
+    const grid = document.getElementById('photos-grid');
+    const empty = document.getElementById('photos-empty');
+    grid.innerHTML = '';
+    document.getElementById('count-label').textContent = photos.length + ' wallpaper' + (photos.length !== 1 ? 's' : '') + ' · ' + folder.name;
+    empty.style.display = photos.length === 0 ? 'block' : 'none';
+    photos.forEach((p, i) => {
+      const sizeLabel = p.sizeKB > 1024 ? (p.sizeKB / 1024).toFixed(1) + ' MB' : Math.round(p.sizeKB) + ' KB';
+      const card = document.createElement('div');
+      card.className = 'photo-card';
+      card.style.animationDelay = (i * 0.05) + 's';
+      card.innerHTML = `
+        <img src="${p.src}" alt="${p.title}" loading="lazy" onclick="openLightbox('${p.src}')">
+        <div class="card-body">
+          <div class="card-title">${p.title}</div>
+          ${p.desc ? `<div class="card-desc">${p.desc}</div>` : ''}
+          <div class="card-meta">
+            <span class="card-size">${sizeLabel} · original</span>
+            <a class="btn-download" href="${p.src}" download="${p.filename}">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg>
+              Download
+            </a>
+          </div>
+          ${isAuth ? `<button class="delete-btn" onclick="deletePhoto(${p.id})" style="margin-top:8px">✕ Remove</button>` : ''}
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  /* ── Delete ── */
+  function deleteFolder(i) {
+    if (!confirm(`Delete "${data.folders[i].name}" and all its wallpapers?`)) return;
+    const fid = data.folders[i].id;
+    data.folders.splice(i, 1);
+    data.photos = data.photos.filter(p => p.folderId !== fid);
+    save(); renderFolders(); refreshFolderSelect();
+  }
+  function deletePhoto(photoId) {
+    if (!confirm('Remove this wallpaper?')) return;
+    data.photos = data.photos.filter(p => p.id !== photoId);
+    save(); renderPhotos(); renderFolders();
+  }
+
+  /* ── Helpers ── */
+  function refreshFolderSelect() {
+    const sel = document.getElementById('photo-folder-select');
+    sel.innerHTML = '<option value="">— select a place —</option>';
+    data.folders.forEach(f => { const o = document.createElement('option'); o.value = f.id; o.textContent = f.name; sel.appendChild(o); });
+    if (currentFolderIndex !== null) sel.value = data.folders[currentFolderIndex]?.id || '';
+  }
+  function updateAdminTitle() {
+    document.getElementById('admin-title').textContent = currentFolderIndex !== null
+      ? 'Add wallpaper to ' + data.folders[currentFolderIndex].name
+      : 'Manage gallery';
+  }
+
+  /* ── Lightbox ── */
+  function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('open'); }
+  function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); document.getElementById('lightbox-img').src = ''; }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeLightbox();
+      if (document.getElementById('pw-overlay').classList.contains('open')) closePw();
+    }
+    if (document.getElementById('pw-overlay').classList.contains('open') && e.key === 'Enter') submitPassword();
+  });
+
+  /* ── Emoji Picker ── */
+  const EMOJIS = {
+    nature: ['🌊','🌿','🌸','🌺','🌻','🌼','🍃','🌱','🌲','🌳','🌴','🍀','🌾','🪨','🪵','🌙','⭐','🌟','💫','🌈','❄️','🔥','💧','🪷','🦋','🐚','🌬️'],
+    travel: ['✈️','🏔️','🗺️','🧭','🏕️','🌍','🏝️','🗼','🏛️','🎑','🌁','🛤️','🚂','⛵','🚢','🏄','🤿','🧳','📍','🏞️','🌄','🌃','🌆','🌇','🌉'],
+    sky:    ['🌅','🌄','🌠','🌌','🌤️','⛅','🌥️','☁️','🌦️','🌧️','⛈️','🌩️','🌨️','🌫️','🌪️','🌈','☀️','🌙','🌛','🌜','🌚','🌝','⭐','🌟','💫','✨','🌃','🌆'],
+    feel:   ['✨','💫','🌟','⭐','💕','💛','🤍','🖤','💙','💚','🩷','🩵','🫧','🪄','🎨','🎞️','🎭','💭','🫶','❤️','🧡','💜','🌸','🕊️','🫐','🍓','🌿','🤎'],
+    camera: ['📸','📷','🎞️','🎬','🖼️','🗃️','💾','🔭','🔬','🎨','✏️','🖊️','📝','📌','🗂️','💡','🔦','🕯️','🌐','📡','🎯','🏆','🥇','🎀','🎁','🛍️'],
+  };
+  let pickerTarget = null;
+  let currentCat = 'nature';
+
+  function openPicker(fieldId) {
+    pickerTarget = document.getElementById(fieldId);
+    const picker = document.getElementById('emoji-picker');
+    picker.style.display = 'block';
+    showCat(currentCat, document.querySelector('.ecat.active'));
+    pickerTarget.focus();
+  }
+
+  function showCat(cat, btn) {
+    currentCat = cat;
+    document.querySelectorAll('.ecat').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    const grid = document.getElementById('emoji-grid');
+    grid.innerHTML = '';
+    EMOJIS[cat].forEach(e => {
+      const b = document.createElement('button');
+      b.className = 'emoji-btn';
+      b.textContent = e;
+      b.type = 'button';
+      b.onclick = () => insertEmoji(e);
+      grid.appendChild(b);
+    });
+  }
+
+  function insertEmoji(emoji) {
+    if (!pickerTarget) return;
+    const el = pickerTarget;
+    const start = el.selectionStart ?? el.value.length;
+    const end = el.selectionEnd ?? el.value.length;
+    el.value = el.value.slice(0, start) + emoji + el.value.slice(end);
+    el.selectionStart = el.selectionEnd = start + emoji.length;
+    el.focus();
+  }
+
+  renderFolders();
+</script>
+</body>
+</html>
